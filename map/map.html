@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!-- leaflet : librairie qui permet d'utiliser OSM -->
+     
+    <!-- vertion pas telechargé, mieu xpour la prod mais pas pratique si dev sans connexion -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- code pour importer la librairie si elle est téléchargé (npm install leaflet)
+    
+    <link rel="stylesheet" type="text/css" href="/leafletCSS" />
+    <script src="/leafletJS"></script>-->
+
+    <link rel="stylesheet" type="text/css" href="/file/map/mapStyle.css" />
+    <script src="/file/map/mapParam.js"> </script>
+    <!-- <script src="/file/map/mapListeners.js"></script> -->
+    <title>Documentde de test</title>
+</head>
+
+<body>
+     
+    <h1>Bonjour</h1>
+    <a href="/"><button>home</button></a>
+    <div id="coord"></div>
+    <div id="bord"></div>
+    <button onclick=garesProches()>gares a proximité</button>
+    <div id="listGares"></div>
+    <div id="mainMap"> 
+    </div>
+    <script>
+        initMap('mainMap',49.76034, 0.37203, 13);
+        printCoordo("coord");
+        printBord("bord");
+    </script>
+</body>
+</html>

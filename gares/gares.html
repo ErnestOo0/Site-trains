@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="/file/gares/garesJS.js"></script>
+    <title>gares</title>
+</head>
+<body>
+    <a href="/"><button>home</button></a>
+    <h1>Ce sont les gares</h1>
+    
+    <input type="text" id="gareId" value="stop_area:SNCF:87413542">
+    <input type="button" onclick="garesAccessibles(document.getElementById('gareId').value)" value="gares accessibles">
+
+    <!-- <script>
+        getLines();
+    </script> -->
+</body>
+</html>

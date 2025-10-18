@@ -1,0 +1,8 @@
+#on ignore les fichiers json, peut etre modifié plus tard si onn a beson d'un json
+*.json
+
+#on ignore tout ce qu'il y a dans le dossier nodes module
+node_modules/**
+
+#on ne prend pas non plus le fichier test qui permet de tester des petites fonctions
+test.html
