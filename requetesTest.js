@@ -1,3 +1,7 @@
+fichierClef = "clefSNCF.json"
+
+//permet de lire les fichiers
+const fs = require('fs');
 const express = require('express');
 const app = express();
 const http = require('http');
@@ -7,8 +11,9 @@ const server = http.createServer(app);
 //elle est placé dans un autre fichier (clefSNCF.json) qui doit rester priver
 
 //pas encore fonctionnel
-fichierClef = "/clefSNCF.json"
-const sncfToken = JSON.parse(fichierClef).sncfToken
+const sncfToken = JSON.parse(fs.readFileSync(fichierClef)).SncfClefAPI;
+
+console.log(sncfToken);
 
 const urlApi = "https://api.sncf.com/v1/coverage/sncf/";
 
