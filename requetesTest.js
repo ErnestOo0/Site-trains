@@ -10,7 +10,7 @@ const server = http.createServer(app);
 //récupération de la clef de l'API sncf
 //elle est placé dans un autre fichier (clefSNCF.json) qui doit rester priver
 
-//pas encore fonctionnel
+
 const sncfToken = JSON.parse(fs.readFileSync(fichierClef)).SncfClefAPI;
 
 console.log(sncfToken);

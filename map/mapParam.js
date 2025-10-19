@@ -70,22 +70,7 @@ async function garesProches() {
     
     printListGares(dicoGares,"listGares");
     console.log(dicoGares);
-        //.then((data) => console.log("data :", data));
-        
-    
-        // .then((data)=> data.json())
-        // .then((jsone)=> jsone.stop_areas)
-        // .then((dicoJson)=>{
-        //     for (num in dicoJson){
-        //         let gare = dicoJson[num];
-        //         let gareName = gare.name;
-        //         if(!Object.keys(dicoGares).includes(gare.name)){
-        //             dicoGares[gareName] = gare.coord;
-        //         };
-        //     }
-       
-        
-};
+}
 
 window.addEventListener("load",()=>{
     garesProches();
@@ -96,6 +81,6 @@ window.addEventListener("load",()=>{
         garesProches();
     });
 
-    map.on("move",updateCentermarker);//fonction de call back passé en parametre
+    //map.on("move",updateCentermarker);//fonction de call back passé en parametre
 });
 
