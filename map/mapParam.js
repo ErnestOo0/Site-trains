@@ -10,7 +10,7 @@ function initMap(mapName,x,y,zoom){
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
-    centerMarker = L.marker([x,y],title = "center").addTo(map);
+    //centerMarker = L.marker([x,y],title = "center").addTo(map);
 }
 
 function addMarker(x,y){
@@ -39,7 +39,7 @@ function distanceBord(center,bord){
 }
 
 function printListGares(dicoGares,idDiv){
-    while(tabMarkersGaresProches.length > 0){
+    while(tabMarkersGaresProches.length > 0){//on supprime les précédents markers de la carte et le tableau qui les contenais
         let mark = tabMarkersGaresProches[0];
         map.removeLayer(mark);
         tabMarkersGaresProches.shift()
@@ -47,13 +47,24 @@ function printListGares(dicoGares,idDiv){
     
     for(let num in dicoGares){
         let infoGare = dicoGares[num];
-        //console.log(infoGare.coord);
-        let newMark = L.marker(infoGare.coord).addTo(map)
-        console.log(typeof newMark);
+        //console.log(infoGare);//contient le nom, l'id et les coord
+
+        //let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+        //layer.addTo(map);
+        let newMark = L.marker(infoGare.coord);
+        newMark.bindPopup("Gare de " + infoGare.name).openPopup();// onn affiche le nom de la gare lorque l'on clique sur le marker
+        newMark.addTo(map);
+
+        //quand on clique sur une gare on récupère son id pour pouvoir récupérer les gares accezssibles
+        newMark.on("click", ()=> {
+            console.log(infoGare.id);
+        });
+
+        //console.log(typeof newMark);
         tabMarkersGaresProches.push(newMark);
 
     }
-    console.log(tabMarkersGaresProches)
+    //console.log(tabMarkersGaresProches)
 
     //$(idDiv).html(html);//marche pas
     //document.getElementById(idDiv).innerHTML = html;
@@ -76,9 +87,12 @@ window.addEventListener("load",()=>{
     garesProches();
 
     map.on("moveend",() => {
+        garesProches();
+    });
+
+    map.on("move",()=>{
         printCoordo("coord");
         printBord("bord");
-        garesProches();
     });
 
     //map.on("move",updateCentermarker);//fonction de call back passé en parametre
