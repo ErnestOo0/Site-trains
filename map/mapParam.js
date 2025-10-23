@@ -38,6 +38,13 @@ function distanceBord(center,bord){
     return map.distance(center,bord._northEast);
 }
 
+async function garesAccessibles(gareID){
+    let tabInfoGares = await fetch("/gares/garesAtteignables/"+gareID)
+        .then((data)=> data.json());
+
+    return tabInfoGares;
+}
+
 function printListGares(dicoGares,idDiv){
     while(tabMarkersGaresProches.length > 0){//on supprime les précédents markers de la carte et le tableau qui les contenais
         let mark = tabMarkersGaresProches[0];
@@ -49,15 +56,15 @@ function printListGares(dicoGares,idDiv){
         let infoGare = dicoGares[num];
         //console.log(infoGare);//contient le nom, l'id et les coord
 
-        //let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-        //layer.addTo(map);
         let newMark = L.marker(infoGare.coord);
         newMark.bindPopup("Gare de " + infoGare.name).openPopup();// onn affiche le nom de la gare lorque l'on clique sur le marker
         newMark.addTo(map);
 
         //quand on clique sur une gare on récupère son id pour pouvoir récupérer les gares accezssibles
-        newMark.on("click", ()=> {
-            console.log(infoGare.id);
+        newMark.on("click", async ()=> {
+            console.log("gare selectionnée :", infoGare.id);
+            let ret = await garesAccessibles(infoGare.id);
+            console.log(ret);
         });
 
         //console.log(typeof newMark);
@@ -65,7 +72,6 @@ function printListGares(dicoGares,idDiv){
 
     }
     //console.log(tabMarkersGaresProches)
-
     //$(idDiv).html(html);//marche pas
     //document.getElementById(idDiv).innerHTML = html;
 }
@@ -76,7 +82,7 @@ async function garesProches() {
     let dist = distanceBord(center,bord);
     console.log("demande des gares proches");
     let dicoGares;
-    dicoGares = await fetch("/gares/"+center.lat+"/"+center.lng+"/"+dist,)
+    dicoGares = await fetch("/gares/"+center.lat+"/"+center.lng+"/"+dist)
         .then((data)=> data.json());
     
     printListGares(dicoGares,"listGares");

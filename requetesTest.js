@@ -159,7 +159,7 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
 
     console.log("gares atteignables :",listGaresAtteign);//listGaresAtteign car il est remplis dans une fonction async
     //enlever les doublons et trier
-    //si possible le faire dans la requete à l'api
+    //si possible le faire dans la requete à l'api, pas possible
     response.json(listGaresAtteign);
 
     // let jsonData = await garesProches(request.params.centerLat,request.params.centerLng,request.params.dist);
