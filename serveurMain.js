@@ -66,8 +66,12 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
 
         let listGaresLine = await appelApi.garesligne(ligne.id);
         listGaresLine.forEach(gare =>{
-            listGaresAtteign.push(gare);
+            if(! utils.garePresente(gare,listGaresAtteign)){
+                listGaresAtteign.push(gare);
+            }
+            
         });
+        
     
     }
 

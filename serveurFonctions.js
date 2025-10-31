@@ -20,6 +20,11 @@ function dicoGaresProches(listGares){
     return dicoGares;
 }
 
+function garePresente(gare,garesTab){
+    return presentDanslistDico(garesTab,'id',gare.id)
+}
+
 module.exports = {
-    dicoGaresProches
+    dicoGaresProches,
+    garePresente
 };
