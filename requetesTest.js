@@ -149,6 +149,7 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
     for (i in lignesJson.lines){//possibilité de mettre plusieurs lignes dans le meme requete donc double boucle pas necessaire, enfait si on met plusiseurs parametres, c'est un AND et pas un OR comme souhaité
         let ligne = lignesJson.lines[i];
         console.log("id de la ligne :",ligne.id);
+        console.log("info ligne : ", ligne.name)
 
         let listGaresLine = await garesligne(ligne.id);
         listGaresLine.forEach(gare =>{
