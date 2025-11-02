@@ -46,7 +46,8 @@ async function garesAccessibles(gareID){
     return tabInfoGares;
 }
 
-function lienGares(start, lGares){
+//généraliser les 2 foonctions avec une fonction qui prend une focntions de callback en param
+function lienGares(start, jsonAtteing){
 
     while(tabLinesGaresAccessibles.length > 0){//on supprime les précédents markers de la carte et le tableau qui les contenais
         let line = tabLinesGaresAccessibles[0];
@@ -56,7 +57,7 @@ function lienGares(start, lGares){
 
     let startCoord = start.coord
     console.log("start coord",startCoord)
-    lGares.forEach(g =>{
+    jsonAtteing.gare.forEach(g =>{
         var gCoord = g.coord;
         var line = L.polygon([
             [startCoord.lat,startCoord.lon],
@@ -64,7 +65,6 @@ function lienGares(start, lGares){
         ]);
         line.addTo(map);
         tabLinesGaresAccessibles.push(line);
-        console.log(line);
     });
 }
 

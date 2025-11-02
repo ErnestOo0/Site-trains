@@ -55,30 +55,22 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
     //on récupère les lignes qui passent par la gare en parammetre
     let lignesJson = await appelApi.appelSncf("stop_areas/"+idGare+"/lines");
     // pour chaque ligne on récupère les stops
-    let listGaresAtteign = [];
+    let jsonGaresAtteign = {"ligne":[],"gare":[],"dessert":[]};
 
-    //comme async, il doit attendre la reponse et est effectué après. Le await ne resoult pas le probleme
-    //console.log(lignesJson.lines);
-    
-    for (i in lignesJson.lines){//possibilité de mettre plusieurs lignes dans le meme requete donc double boucle pas necessaire, enfait si on met plusiseurs parametres, c'est un AND et pas un OR comme souhaité
-        let ligne = lignesJson.lines[i];
-        console.log("id de la ligne :",ligne.id);
-
-        let listGaresLine = await appelApi.garesligne(ligne.id);
+    for(let l of lignesJson.lines){
+        console.log("id de la ligne :",l.id);
+        jsonGaresAtteign.ligne.push({"id":l.id, "name":l.name});
+        let listGaresLine = await appelApi.garesligne(l.id);
         listGaresLine.forEach(gare =>{
-            if(! utils.garePresente(gare,listGaresAtteign)){
-                listGaresAtteign.push(gare);
-            }
-            
-        });
-        
-    
-    }
 
-    console.log("gares atteignables :",listGaresAtteign);//listGaresAtteign car il est remplis dans une fonction async
-    //enlever les doublons et trier
-    //si possible le faire dans la requete à l'api, pas possible
-    response.json(listGaresAtteign);
+            if(! utils.garePresente(gare,jsonGaresAtteign.gare)){
+                jsonGaresAtteign.gare.push(gare);
+            }
+            jsonGaresAtteign.dessert.push({"idLigne":l.id,"idGare":gare.id});
+        });
+    }
+    console.log("gares atteignables :",jsonGaresAtteign);
+    response.json(jsonGaresAtteign);
 
     // let jsonData = await garesProches(request.params.centerLat,request.params.centerLng,request.params.dist);
     // console.log("gares :",jsonData.stop_areas);

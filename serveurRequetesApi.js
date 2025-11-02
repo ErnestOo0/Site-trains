@@ -24,11 +24,13 @@ async function appelSncf(demande){
     return await dataSncf.json();
 }
 
+//fonction qui renvoie la liste des gares dans un rayon de distance du point lat,lng
 async function garesProches(lat,lng,distance) {
     let strDemande = "coord/"+lng+"%3B"+lat+"/stop_areas?distance="+Math.trunc(distance)+"&";//la distance doit être entiere, comme elle est en metre, on a pas besoin d'une préscision en cm
     return await appelSncf(strDemande)
 }
 
+//focntion qui permet de connaitre les arrets d'une ligne
 async function garesligne(idLine){
     let tabGaresLignes = [];
     let gares = await appelSncf("lines/"+idLine+"/stop_areas");
