@@ -3,6 +3,7 @@ console.log("ficiher js de la map")
 let map;
 let centerMarker;
 let tabMarkersGaresProches = [];
+let tabLinesGaresAccessibles = [];
 
 function initMap(mapName,x,y,zoom){
     map = L.map(mapName).setView([x,y], zoom);
@@ -45,6 +46,28 @@ async function garesAccessibles(gareID){
     return tabInfoGares;
 }
 
+function lienGares(start, lGares){
+
+    while(tabLinesGaresAccessibles.length > 0){//on supprime les précédents markers de la carte et le tableau qui les contenais
+        let line = tabLinesGaresAccessibles[0];
+        map.removeLayer(line);
+        tabLinesGaresAccessibles.shift()
+    }
+
+    let startCoord = start.coord
+    console.log("start coord",startCoord)
+    lGares.forEach(g =>{
+        var gCoord = g.coord;
+        var line = L.polygon([
+            [startCoord.lat,startCoord.lon],
+            [gCoord.lat,gCoord.lon],
+        ]);
+        line.addTo(map);
+        tabLinesGaresAccessibles.push(line);
+        console.log(line);
+    });
+}
+
 function printListGares(dicoGares,idDiv){
     while(tabMarkersGaresProches.length > 0){//on supprime les précédents markers de la carte et le tableau qui les contenais
         let mark = tabMarkersGaresProches[0];
@@ -64,6 +87,7 @@ function printListGares(dicoGares,idDiv){
         newMark.on("click", async ()=> {
             console.log("gare selectionnée :", infoGare.id);
             let ret = await garesAccessibles(infoGare.id);
+            lienGares(infoGare,ret);
             console.log(ret);
         });
 
@@ -71,9 +95,6 @@ function printListGares(dicoGares,idDiv){
         tabMarkersGaresProches.push(newMark);
 
     }
-    //console.log(tabMarkersGaresProches)
-    //$(idDiv).html(html);//marche pas
-    //document.getElementById(idDiv).innerHTML = html;
 }
 
 async function garesProches() {
