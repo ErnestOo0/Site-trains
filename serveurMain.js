@@ -19,7 +19,7 @@ app.get('/', (request, response) => {
     console.log("envoie de la page d'acceuil");
 });
 
-app.get('/file/:dirName/:fileName', (request, response) => {
+app.get('/file/:dirName/:fileName', async (request, response) => {
     console.log("traitement du fichier:",request.params.fileName)
     response.sendFile(request.params.dirName+"/"+request.params.fileName, {root: __dirname});
     console.log("envoie du fichier :",request.params.dirName+"/"+request.params.fileName);
@@ -38,7 +38,6 @@ app.get('/gares/:centerLat/:centerLng/:dist',async (request, response) => {
     });
 
     let jsonData = await appelApi.garesProches(request.params.centerLat,request.params.centerLng,request.params.dist);
-    console.log("gares :",jsonData.stop_areas);
     let dicoGares = utils.dicoGaresProches(jsonData.stop_areas);
     //pas encore fait le cas où il y a plusieurs pages
     console.log("dico gares :",dicoGares);
@@ -72,10 +71,4 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
     console.log("gares atteignables :",jsonGaresAtteign);
     response.json(jsonGaresAtteign);
 
-    // let jsonData = await garesProches(request.params.centerLat,request.params.centerLng,request.params.dist);
-    // console.log("gares :",jsonData.stop_areas);
-    // let dicoGares = dicoGaresProches(jsonData.stop_areas);
-    // //pas encore fait le cas où il y a plusieurs pages
-    // console.log("dico gares :",dicoGares);
-    // response.json(dicoGares);
 });

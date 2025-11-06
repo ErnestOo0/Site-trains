@@ -2,8 +2,8 @@ console.log("ficiher js de la map")
 
 let map;
 let centerMarker;
-let tabMarkersGaresProches = [];
-let tabLinesGaresAccessibles = [];
+let GaresProches = L.layerGroup();
+let LiensGaresAccessibles =  L.layerGroup();
 
 function initMap(mapName,x,y,zoom){
     map = L.map(mapName).setView([x,y], zoom);
@@ -68,14 +68,12 @@ function lienGares(start, jsonAtteing){
         return coordGare;
     }
 
-    while(tabLinesGaresAccessibles.length > 0){//on supprime les précédents markers de la carte et le tableau qui les contenais
-        let line = tabLinesGaresAccessibles[0];
-        map.removeLayer(line);
-        tabLinesGaresAccessibles.shift()
-    }
+    LiensGaresAccessibles.eachLayer(function (layer) {
+        map.removeLayer(layer);
+        LiensGaresAccessibles.removeLayer(layer)
+    });
 
     let startCoord = start.coord
-    console.log("start coord",startCoord)
 
     jsonAtteing.ligne.forEach( ligneTrain =>{
 
@@ -86,27 +84,30 @@ function lienGares(start, jsonAtteing){
                 [debCoord.lat,debCoord.lon],
                 [g.lat,g.lon],
             ]);
-            line.addTo(map);
-            tabLinesGaresAccessibles.push(line);
+
+            LiensGaresAccessibles.addLayer(line);
             debCoord = g;//les lignes doivent aller d'une gare à l'autre donc on décale le début
         })
     })
+    LiensGaresAccessibles.addTo(map);
 }
 
-function printListGares(dicoGares,idDiv){
-    while(tabMarkersGaresProches.length > 0){//on supprime les précédents markers de la carte et le tableau qui les contenais
-        let mark = tabMarkersGaresProches[0];
-        map.removeLayer(mark);
-        tabMarkersGaresProches.shift()
-    }
+function printListGares(dicoGares){
+
+    GaresProches.eachLayer(function (layer) {
+        map.removeLayer(layer);
+        GaresProches.removeLayer(layer)
+    });
+    //devrait faire pareil mais ne marche pas
+    //GaresProches.invoke(map.removeLayer);
+    //GaresProches.clearLayers();
     
     for(let num in dicoGares){
-        let infoGare = dicoGares[num];
-        //console.log(infoGare);//contient le nom, l'id et les coord
+        let infoGare = dicoGares[num];//contient le nom, l'id et les coord
 
         let newMark = L.marker(infoGare.coord);
         newMark.bindPopup("Gare de " + infoGare.name).openPopup();// onn affiche le nom de la gare lorque l'on clique sur le marker
-        newMark.addTo(map);
+
 
         //quand on clique sur une gare on récupère son id pour pouvoir récupérer les gares accezssibles
         newMark.on("click", async ()=> {
@@ -115,14 +116,16 @@ function printListGares(dicoGares,idDiv){
             lienGares(infoGare,ret);
             console.log(ret);
         });
-
-        //console.log(typeof newMark);
-        tabMarkersGaresProches.push(newMark);
+        GaresProches.addLayer(newMark);
 
     }
+    GaresProches.addTo(map);
+
+
+
 }
 
-async function garesProches() {
+async function getGaresProches() {
     let center = map.getCenter();
     let bord = map.getBounds();
     let dist = distanceBord(center,bord);
@@ -131,15 +134,15 @@ async function garesProches() {
     dicoGares = await fetch("/gares/"+center.lat+"/"+center.lng+"/"+dist)
         .then((data)=> data.json());
     
-    printListGares(dicoGares,"listGares");
+    printListGares(dicoGares);
     console.log(dicoGares);
 }
 
 window.addEventListener("load",()=>{
-    garesProches();
+    getGaresProches();
 
     map.on("moveend",() => {
-        garesProches();
+        getGaresProches();
     });
 
     map.on("move",()=>{
