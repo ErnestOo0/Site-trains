@@ -92,7 +92,7 @@ function lienGares(start, jsonAtteing){
     LiensGaresAccessibles.addTo(map);
 }
 
-function printListGares(dicoGares){
+function printListGares(dicoGares) {
 
     GaresProches.eachLayer(function (layer) {
         map.removeLayer(layer);
@@ -101,8 +101,8 @@ function printListGares(dicoGares){
     //devrait faire pareil mais ne marche pas
     //GaresProches.invoke(map.removeLayer);
     //GaresProches.clearLayers();
-    
-    for(let num in dicoGares){
+
+    for (let num in dicoGares) {
         let infoGare = dicoGares[num];//contient le nom, l'id et les coord
 
         let newMark = L.marker(infoGare.coord);
@@ -110,16 +110,151 @@ function printListGares(dicoGares){
 
 
         //quand on clique sur une gare on récupère son id pour pouvoir récupérer les gares accezssibles
-        newMark.on("click", async ()=> {
+        newMark.on("click", async () => {
             console.log("gare selectionnée :", infoGare.id);
             let ret = await garesAccessibles(infoGare.id);
-            lienGares(infoGare,ret);
+            lienGares(infoGare, ret);
+            tabGare(infoGare, ret,'Tab_Gares');
+            //json2Table2(ret, "Tab_Gares");
             console.log(ret);
         });
         GaresProches.addLayer(newMark);
 
     }
     GaresProches.addTo(map);
+}
+
+function htmlElem(nomElem,htmlString, idAttrib = '', classAttrib = ''){
+    let deb =  `<${nomElem} `;
+    if(idAttrib != ''){
+        deb += `id = ${idAttrib} `;
+    }
+    if(classAttrib != ''){
+        deb += `class = ${classAttrib} `;
+    }
+    return `${deb}>${htmlString}</ ${nomElem}>`;
+}
+
+function htmlDiv(htmlString, idAttrib = '', classAttrib = ''){//fonction qui permet de mettre des élément dans une div html
+    return htmlElem('div',htmlString,idAttrib= idAttrib,idAttrib= classAttrib);
+}
+
+function tableHtml(Jsondico, cols = [], idAttrib = '', classAttrib = ''){
+    let htmlString;
+    //Si rien n'est précisé, on met tous les atributs du dico en titre de colone
+    if(cols.length <= 0){
+        cols = Object.keys(Jsondico[0]);
+    }
+    //on fait la premiere colone avec les noms
+    let thTable = "";
+    for(let clef of cols){
+        thTable += htmlElem('th',clef);
+    }
+    htmlString = htmlElem('tr',thTable)
+
+    let valColones = "";
+    for(var val of Jsondico){
+        thTable = "";
+        for(var attrib of cols){
+            thTable += htmlElem('td',val[attrib]);
+        }
+        valColones += htmlElem('tr',thTable);
+    }
+    htmlString += valColones;
+
+    return htmlElem('table',htmlString,idAttrib= idAttrib,idAttrib= classAttrib);
+}
+
+
+
+function clickButton(idB,tab){
+
+    function domOuStr(x){//renvoie l'element du dom qui a L'id x ou x si c'est un élément du dom
+        //les parametres sont censé etre des strings mais ils devienent des éléments du dom quand ils sont appelés dans onclik mais quand ils sont dans une fonction Element.on("event,...) ils restent une string
+        let elem = document.getElementById(x);
+        if(elem == null){
+            elem = x;
+        }
+        return elem;
+    }
+
+    function affichMasqu(){
+
+        let elem = document.getElementById(tab);
+        if(elem == null){
+            elem = tab;
+        }
+        elem.hidden = !elem.hidden;
+        return elem.hidden;
+    }
+
+    let button = domOuStr(idB)
+    let table = domOuStr(tab)
+    //On ajoute l'evenement qui permet d'affichier le tableau et de modifier le boutton quand on clique dessus
+    if(affichMasqu(table)){//on change sa valeure et on la récupère
+        button.setAttribute("value",">");
+        console.log("masqué");
+    }
+    else{
+        button.setAttribute("value","v");
+        console.log("démasqué");
+    }
+}
+
+function caseTab(titre,dicoVal,idElem,idEmplacement,colones=[],classElem=''){
+
+    htmlRes = "";
+    //On ajoute le titre et le bouton de sélection
+    let idButton = idElem+'Button';
+    let idTable = idElem + `tab`//id de la table
+    let htmlTitre = titre;
+    htmlTitre += ` <input type="button" value=">" id="${idButton}" onclick="clickButton('${idButton}','${idTable}')"></input>`
+    htmlListGares = htmlDiv(htmlTitre,idAttrib = idElem+'Titre')
+
+    //On ajoute le tableau
+
+    htmlListGares += tableHtml(dicoVal,cols = colones,idAttrib=idTable)
+
+    htmlListGares = htmlDiv(htmlListGares,idAttrib = idElem);
+    htmlRes += htmlListGares
+
+    //on ajoute le tout dans la div qui est donnée en parametre
+    document.getElementById(idEmplacement).innerHTML += htmlRes;
+    //on masque le tableau
+    console.log(idElem);
+    document.getElementById(idTable).hidden = true;
+
+}
+
+function tabGare(gareOrigine,dicoGaresAcces,idDiv){
+
+    //similaire à coordGaresLigne mais revoie tout les éléments, il faudrait faire une fonction plus générique
+    function garesSurLigne(idL){//avec l'id d'une ligne renvoie toutes les coord des gares qui sont sur cette ligne
+
+        function findGareById(idG){
+            for(g of dicoGaresAcces.gare){//froEach ne permet pas de quitter avec un return
+                if(g.id == idG){
+                    return g;
+                }
+            }
+        }
+
+        let lGare = [];
+        dicoGaresAcces.dessert.forEach(d =>{
+            if(d.idLigne == idL){
+                lGare.push(findGareById(d.idGare));
+            }
+        })
+        return lGare;
+    }
+
+    document.getElementById(idDiv).innerHTML = ""
+    let titre1 = `${dicoGaresAcces.gare.length} Gares accessibles`;
+    caseTab(titre1,dicoGaresAcces.gare,'listGaresAccessibles',idDiv,colones=["name"]);
+
+    for(var li of dicoGaresAcces.ligne){
+        caseTab(`Ligne ${li.name}`,garesSurLigne(li.id),`ligne_${li.id}`,idDiv,colones=["name"]);
+    }
 
 
 
@@ -137,6 +272,8 @@ async function getGaresProches() {
     printListGares(dicoGares);
     console.log(dicoGares);
 }
+
+
 
 window.addEventListener("load",()=>{
     getGaresProches();

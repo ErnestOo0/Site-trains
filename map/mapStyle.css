@@ -3,5 +3,15 @@ h1 {
 }
 
 #mainMap {
-    height: 100vh;
-} 
+    height: 85vh;
+    width: 70vw;
+    object-position: right;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th,td {
+    border: solid;
+}
