@@ -63,7 +63,9 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
         jsonGaresAtteign.ligne.push({"id":l.id, "name":l.name});
         let listGaresLine = await appelApi.garesligne(l.id);
         console.log("gares",listGaresLine);
-        utils.triGaresDist(listGaresLine,"");
+
+        let dest = l.routes[0].direction.stop_area;
+        utils.triGaresDist(listGaresLine,dest);
         listGaresLine.forEach(gare =>{
 
             if(! utils.garePresente(gare,jsonGaresAtteign.gare)){

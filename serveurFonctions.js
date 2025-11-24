@@ -48,8 +48,21 @@ function distanceEntre2Gares(g1,g2){
     return 2*rayonT*Math.asin(Math.sqrt(a));
 }
 
-function triGaresDist(lGares,depart){
+function triGaresDist(lGares,destination){
 
+    function prepare(){
+        for(let ig in lGares){
+            if(lGares[ig].id == destination.id){
+                lGares.splice(ig, ig)
+                lGares.unshift(destination);
+                return true;
+            }
+        }
+        return false;//lGares ne contient pas la destination, il y a un probleme
+    }
+    prepare()
+    console.log(destination);
+    console.log(lGares)
     console.log(distanceEntre2Gares(lGares[0].coord,lGares[2].coord));
 }
 
