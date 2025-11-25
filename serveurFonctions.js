@@ -48,22 +48,48 @@ function distanceEntre2Gares(g1,g2){
     return 2*rayonT*Math.asin(Math.sqrt(a));
 }
 
+function swichPos(t,p1,p2){//échange la position de des éléments aux indices p1 et p2
+
+    let e1 = t.splice(p1,1,t[p2])[0]//splice renvoie un tableau d'un élément
+    t.splice(p2,1,e1);
+}
+
+//place l'élément le plus proche de l'élément à l'indice iFin juste avant lui
+function plusProcheFin(tab,iFin){
+    let pProche = 0;
+    let dMin = distanceEntre2Gares(tab[0].coord,tab[iFin].coord);
+    for(var i=1;i<iFin;i++){
+        let d = distanceEntre2Gares(tab[i].coord,tab[iFin].coord)
+        if(d < dMin){
+            pProche = i;
+            dMin = d;
+        }
+    }
+
+    swichPos(tab, pProche,iFin-1);
+
+
+}
+
+
+//trie le tableau de gares lGares en mettant en dernier la destination et place avant la gare la plus proche, trie simimaire sur tout le tableau
 function triGaresDist(lGares,destination){
 
     function prepare(){
         for(let ig in lGares){
             if(lGares[ig].id == destination.id){
-                lGares.splice(ig, ig)
-                lGares.unshift(destination);
+                swichPos(lGares, ig,lGares.length-1);
                 return true;
             }
         }
         return false;//lGares ne contient pas la destination, il y a un probleme
     }
     prepare()
-    console.log(destination);
-    console.log(lGares)
-    console.log(distanceEntre2Gares(lGares[0].coord,lGares[2].coord));
+
+    for(var iArriv = lGares.length -1; iArriv > 0; iArriv--){
+         plusProcheFin(lGares, iArriv);
+    }
+
 }
 
 module.exports = {

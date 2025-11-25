@@ -59,10 +59,8 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
     //pour chaque ligne on ajoute les gares par lesquelles elles passent
     for(let l of lignesJson.lines){
         console.log("id de la ligne :",l.id);
-        console.log("info sur la ligne :",l);
         jsonGaresAtteign.ligne.push({"id":l.id, "name":l.name});
         let listGaresLine = await appelApi.garesligne(l.id);
-        console.log("gares",listGaresLine);
 
         let dest = l.routes[0].direction.stop_area;
         utils.triGaresDist(listGaresLine,dest);
