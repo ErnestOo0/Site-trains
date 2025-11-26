@@ -1,9 +1,10 @@
-#on ignore les fichiers json, peut etre modifié plus tard si onn a beson d'un json
+#on ignore les fichiers json, sauf package.json
 *.json
+!package.json
 
 #on ignore tout ce qu'il y a dans le dossier nodes module et le dossier .idea
 node_modules/**
 .idea/**
 #on ne prend pas non plus le fichier test qui permet de tester des petites fonctions
 test.html
-
+.DS_Store
