@@ -9,8 +9,8 @@ const server = http.createServer(app);
 
 // app.use("/serv",controller);
 
-const utils = require("./serveurFonctions.js");
-const appelApi = require("./serveurRequetesApi.js");
+const utils = require("./serveur/serveurFonctions.js");
+const appelApi = require("./serveur/serveurRequetesApi.js");
 
 server.listen(8888, () => {console.log('Le serveur écoute sur le port 8888');});
 
@@ -22,7 +22,7 @@ app.get('/', (request, response) => {
 app.get('/file/:dirName/:fileName', async (request, response) => {
     console.log("traitement du fichier:",request.params.fileName)
     response.sendFile(request.params.dirName+"/"+request.params.fileName, {root: __dirname});
-    console.log("envoie du fichier :",request.params.dirName+"/"+request.params.fileName);
+    console.log("envoie du fichier :",`${request.params.dirName}/${request.params.fileName}`);
 });
 
 app.get("/sncf/:req",async (request, response) => {//fonction asyncrone qui permet de faire await
@@ -58,7 +58,6 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
 
     //pour chaque ligne on ajoute les gares par lesquelles elles passent
     for(let l of lignesJson.lines){
-        console.log("id de la ligne :",l.id);
         jsonGaresAtteign.ligne.push({"id":l.id, "name":l.name});
         let listGaresLine = await appelApi.garesligne(l.id);
 
@@ -72,7 +71,6 @@ app.get('/gares/garesAtteignables/:idGare',async (request, response) => {
             jsonGaresAtteign.dessert.push({"idLigne":l.id,"idGare":gare.id});
         });
     }
-    console.log("gares atteignables :",jsonGaresAtteign);
     response.json(jsonGaresAtteign);
 
 });

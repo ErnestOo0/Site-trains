@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "javaScriptDest",
+    "target": "es6",
+    "strict": true
+  },
+  "include": [
+    "serveur/**/*"
+  ]
+}

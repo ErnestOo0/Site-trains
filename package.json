@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "@types/express": "^5.0.5",
+    "express": "^5.1.0"
+  },
+  "name": "site-trains",
+  "version": "1.0.0",
+  "description": "site internet qui permet de connaître les destinations accessibles depuis une gare",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.11",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon javaScriptDest/serveurMain.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ErnestOo0/Site-trains.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ErnestOo0/Site-trains/issues"
+  },
+  "homepage": "https://github.com/ErnestOo0/Site-trains#readme"
+}
